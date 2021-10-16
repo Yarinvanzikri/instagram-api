@@ -1,15 +1,20 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const routes = require('./config/routes')
+const cors = require('cors')
 const app = express();
 const port = 4000;
 
-app.get('/', ((req, res) => {
-    res.send('yay!')
-}))
+app.use(cors()); // Allows us to get request from other domains. (npm i cors)
+app.use(express.json());
+app.use(routes);
 
 mongoose.connect('mongodb://localhost:27017/instagram')
-    .then(()=> {
-        app.listen(port, () => {
-            console.log(`App listening at http://localhost:${port}`)
-        });
+    .then(listen)
+    .catch(err => console.error(err))
+
+function listen() {
+    app.listen(port, () => {
+        console.log(`App listening at http://localhost:${port}`)
     });
+}
