@@ -6,6 +6,7 @@ const app = express();
 const port = 4000;
 
 app.use(cors()); // Allows us to get request from other domains. (npm i cors)
+app.use(express.static('public'))
 app.use(express.json());
 app.use(routes);
 

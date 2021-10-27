@@ -35,10 +35,24 @@ async function getAllUsers(req, res)
     const users = await User.find({});
     res.send(users);
 }
+async function me(req, res) {
+    try {
+        const user =  await User.findById(req.userId);
+        if (!user) {
+            res.sendStatus(401);
+            return;
+        }
+        res.send(user)
+    } catch (err) {
+        res.sendStatus(500);
+    }
+
+}
 module.exports = {
     create,
     login,
-    getAllUsers
+    getAllUsers,
+    me
 }
 
 

@@ -7,6 +7,7 @@ const userSchema = new mongoose.Schema({
         unique: true
     },
     password: {
+        select: false, //prevents from sharing the password.
         type: String,
         required: true
 
