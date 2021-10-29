@@ -1,4 +1,5 @@
 const Post = require("../models/post.js");
+const User = require("../models/user.js");
 
 
 async function create(req, res) {
@@ -20,6 +21,13 @@ async function create(req, res) {
         res.status(400).json({ message: 'Could not save post' });
     }
 }
+async function getPosts(req, res) {
+    const { username } =  req.params;
+    const user = await User.findOne({username});
+    const posts = await Post.find({author: user._id}).populate('author');
+    res.send(posts);
+}
+
 async function getAll(req, res) {
     const allPosts = await Post.find({}).populate("author");
     res.json(allPosts);
@@ -27,5 +35,7 @@ async function getAll(req, res) {
 
 module.exports = {
     create,
+    getPosts,
     getAll
+
 }

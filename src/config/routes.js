@@ -33,15 +33,16 @@ const auth = (req, res, next)=>{
 
 router.get('/user/me', auth, usersController.me);
 
+router.get('/post/:username', auth, postsController.getPosts)
 router.get('/post', postsController.getAll);
 router.post('/post', auth, upload.single('image'), postsController.create);
 
+router.get("/user/:username", auth, usersController.getUser)
 router.post('/user', usersController.create);
 
+
 router.get('/get', usersController.getAllUsers); //change with tirgul system to user
-
 router.post('/sign-in', usersController.login);
-
 router.get('/health', (req, res) => {
     res.sendStatus(200); // indication for checking if server is online.
 });
