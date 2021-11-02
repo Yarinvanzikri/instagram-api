@@ -58,18 +58,29 @@ async function getUser(req, res) {
             // res.send({...user._doc, posts: posts.length})
             res.send(user);
         }
-
     } catch (err) {
+        res.sendStatus(500);
+    }
+}
+async function search(req, res) {
+    try{
+        const { username } = req.params;
+        const users = await User.find({username: new RegExp (username, "ig" ) })
+        res.json(users)
+    } catch (e) {
+        console.error(e)
         res.sendStatus(500);
     }
 
 }
+
 module.exports = {
     create,
     login,
     getAllUsers,
     me,
-    getUser
+    getUser,
+    search
 }
 
 

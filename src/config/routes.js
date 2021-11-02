@@ -3,6 +3,7 @@ const router = express.Router();
 const usersController = require('../controllers/users.controller');
 const postsController = require('../controllers/post.contoroller');
 const jwt = require('jsonwebtoken');
+
 const multer  = require('multer');
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -33,13 +34,17 @@ const auth = (req, res, next)=>{
 
 router.get('/user/me', auth, usersController.me);
 
-router.get('/post/:username', auth, postsController.getPosts)
+router.get('/post/profile/:id', postsController.getPost);
+
+router.get('/post/:username', auth, postsController.getPosts);
+
 router.get('/post', postsController.getAll);
 router.post('/post', auth, upload.single('image'), postsController.create);
 
-router.get("/user/:username", auth, usersController.getUser)
+router.get("/user/:username", auth, usersController.getUser);
 router.post('/user', usersController.create);
 
+router.get("/search/user/:username", auth,  usersController.search);
 
 router.get('/get', usersController.getAllUsers); //change with tirgul system to user
 router.post('/sign-in', usersController.login);
