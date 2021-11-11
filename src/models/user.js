@@ -17,6 +17,10 @@ const userSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
+    following: {
+        type: Array,
+        default: () =>[]
+    },
     createdAt: {
         type: Date,
         default: () => new Date()

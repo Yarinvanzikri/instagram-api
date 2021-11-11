@@ -1,5 +1,6 @@
 const Post = require("../models/post.js");
 const User = require("../models/user.js");
+const mongoose = require("mongoose");
 
 
 async function create(req, res) {
@@ -10,8 +11,6 @@ async function create(req, res) {
         image: req.file.filename,
         author: req.userId
     }
-    console.log(tempPost)
-    console.log(req.body)
     const post = new Post(tempPost);
     try {
         const savedPost = await post.save();
@@ -35,9 +34,7 @@ async function getPosts(req, res) {
 async function getPost (req, res) {
     try {
         const { id } = req.params;
-        console.log(id)
         const post = await Post.findById(id);
-        console.log(post)
         res.send(post);
     } catch (e) {
         console.error(e)
@@ -49,11 +46,28 @@ async function getAll(req, res) {
     const allPosts = await Post.find({}).populate("author");
     res.json(allPosts);
 }
+async function like(req, res) {
+    console.log("userid" , req.userId)
+    console.log("params", req.params)
+    await Post.findByIdAndUpdate(req.params.id,
+        {$addToSet: { likes: mongoose.Types.ObjectId(req.userId)}}
+        );
+    res.sendStatus(200);
+}
+
+async function unlike(req, res) {
+    await Post.findByIdAndUpdate(req.params.id,
+        {$pull: { likes: mongoose.Types.ObjectId(req.userId)}}
+    );
+    res.sendStatus(200);
+}
 
 module.exports = {
     create,
     getPosts,
     getPost,
+    like,
+    unlike,
     getAll
 
 }

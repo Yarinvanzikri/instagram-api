@@ -1,6 +1,7 @@
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 const Post = require('../models/post');
+const mongoose = require("mongoose");
 
 
 async function create(req, res){
@@ -71,8 +72,44 @@ async function search(req, res) {
         console.error(e)
         res.sendStatus(500);
     }
+}
+async function follow(req, res) {
+    const { username } = req.params;
+    const myId = req.userId;
+    try {
+        const whoToFollow = await User.findOne({ username });
+        if(!whoToFollow) {
+            res.sendStatus(400);
+            return false;
+        }
+        await User.findByIdAndUpdate(myId,
+            {$addToSet: { following: mongoose.Types.ObjectId(whoToFollow._id) } }
+        );
+        res.send()
+    } catch(err) {
+        res.sendStatus(500);
+    }
 
 }
+async function unfollow(req, res) {
+    const { username } = req.params;
+    const myId = req.userId;
+    try {
+        const whoToUnfollow = await User.findOne({ username });
+        if(!whoToUnfollow) {
+            res.sendStatus(400);
+            return false;
+        }
+        await User.findByIdAndUpdate(myId,
+            {$pull: { following: mongoose.Types.ObjectId(whoToUnfollow._id) } }
+        );
+        res.send()
+    } catch(err) {
+        res.sendStatus(500);
+    }
+
+}
+
 
 module.exports = {
     create,
@@ -80,6 +117,8 @@ module.exports = {
     getAllUsers,
     me,
     getUser,
+    follow,
+    unfollow,
     search
 }
 

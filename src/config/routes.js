@@ -20,7 +20,7 @@ const upload = multer({ storage });
 
 const auth = (req, res, next)=>{
     const token = req.headers['authorization'];
-    console.log(token);
+    console.log("auth token",token);
     try {
         const user = jwt.verify(token, 'yarin'); // check if the key is matched and the token created ny this key
         req.userId = user.id
@@ -32,19 +32,22 @@ const auth = (req, res, next)=>{
     }
 }
 
+
 router.get('/user/me', auth, usersController.me);
-
+router.post('/post/:id/like', auth, postsController.like);
+router.post('/post/:id/unlike', auth, postsController.unlike);
 router.get('/post/profile/:id', postsController.getPost);
-
 router.get('/post/:username', auth, postsController.getPosts);
-
 router.get('/post', postsController.getAll);
 router.post('/post', auth, upload.single('image'), postsController.create);
 
 router.get("/user/:username", auth, usersController.getUser);
+router.post("/user/:username/follow", auth,  usersController.follow);
+router.post("/user/:username/unfollow", auth,  usersController.unfollow);
 router.post('/user', usersController.create);
 
 router.get("/search/user/:username", auth,  usersController.search);
+
 
 router.get('/get', usersController.getAllUsers); //change with tirgul system to user
 router.post('/sign-in', usersController.login);
