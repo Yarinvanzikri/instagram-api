@@ -20,22 +20,24 @@ const upload = multer({ storage });
 
 const auth = (req, res, next)=>{
     const token = req.headers['authorization'];
-    console.log("auth token",token);
     try {
         const user = jwt.verify(token, 'yarin'); // check if the key is matched and the token created ny this key
         req.userId = user.id
         next();
     } catch (err) {
-        //err
-        console.log(err);
         res.status(403).send()
     }
 }
 
 
 router.get('/user/me', auth, usersController.me);
+
 router.post('/post/:id/like', auth, postsController.like);
 router.post('/post/:id/unlike', auth, postsController.unlike);
+
+router.post('/post/:id/comment', auth, postsController.createComment)
+router.get('/post/:id/comment', auth, postsController.getComments)
+
 router.get('/post/profile/:id', postsController.getPost);
 router.get('/post/:username', auth, postsController.getPosts);
 router.get('/post', postsController.getAll);

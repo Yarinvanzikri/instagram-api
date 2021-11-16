@@ -2,17 +2,19 @@ const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 const Post = require('../models/post');
 const mongoose = require("mongoose");
+const md5 =  require('md5');
 
 
 async function create(req, res){
     const user = new User(req.body);
-    // try {
+    user.password = md5(user.password);
+    try {
         const savedUser = await user.save();
-        console.log(savedUser)
+        // console.log(savedUser)
         res.status(201).send(savedUser);
-    // } catch (err) {
-    //     res.status(400).send(err);
-    // }
+    } catch (err) {
+        res.status(400).send(err);
+    }
 }
 
 async function login(req, res) {
@@ -21,14 +23,17 @@ async function login(req, res) {
         res.status(403).send();
         return;
     }
-    const userExist = await User.findOne({username, password});
+    const userExist = await User.findOne({
+        username,
+        password: md5(password)
+    });
     if(!userExist) {
         res.status(403).send();
         return;
     }
-    console.log(userExist._id)
+    // console.log(userExist._id)
     const token = jwt.sign({id: userExist._id}, 'yarin')
-    console.log({token})
+    // console.log({token})
     res.json({token});
 
 }
