@@ -74,7 +74,8 @@ async function createComment(req, res) {
         content: req.body.content
     });
     try {
-        const createdComment = await comment.save();
+        let createdComment = await comment.save();
+        createdComment = await Comment.findById(createdComment._id).populate('author')
         res.json(createdComment);
     } catch(e) {
         console.log(e)
@@ -87,7 +88,7 @@ async function createComment(req, res) {
 async function getComments(req, res) {
     const { id } = req.params;
     try {
-    const comments = await Comment.find({ post: id });
+    const comments = await Comment.find({ post: id }).populate("author");
     res.json(comments);
     } catch(e) {
         res.sendStatus(500);
