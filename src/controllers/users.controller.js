@@ -3,10 +3,12 @@ const jwt = require('jsonwebtoken');
 const Post = require('../models/post');
 const mongoose = require("mongoose");
 const md5 =  require('md5');
+const user = require("express");
 
 
 async function create(req, res){
     const user = new User(req.body);
+
     user.password = md5(user.password);
     try {
         const savedUser = await user.save();
@@ -15,6 +17,26 @@ async function create(req, res){
     } catch (err) {
         res.status(400).send(err);
     }
+}
+
+async function userEdit(req, res){
+    // const params = req.params;
+    const myId = req.userId;
+    try {
+        const user = await User.findById(myId);
+
+        if(user) {
+            await User.updateOne({username:user.username}, {
+                 avatar : req.file.filename})
+            const savedUser = await user.save();
+            res.status(200).send(savedUser);
+        } else {
+            res.status(400).send(e)
+        }
+    } catch (e) {
+       console.error(e)
+    }
+
 }
 
 async function login(req, res) {
@@ -124,6 +146,7 @@ module.exports = {
     getUser,
     follow,
     unfollow,
+    userEdit,
     search
 }
 

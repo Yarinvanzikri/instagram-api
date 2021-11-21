@@ -5,6 +5,7 @@ const postsController = require('../controllers/post.contoroller');
 const jwt = require('jsonwebtoken');
 
 const multer  = require('multer');
+
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, 'public')
@@ -35,14 +36,17 @@ router.get('/user/me', auth, usersController.me);
 router.post('/post/:id/like', auth, postsController.like);
 router.post('/post/:id/unlike', auth, postsController.unlike);
 
+router.delete('/post/comment/:id/delete', auth, postsController.commentDelete);
 router.post('/post/:id/comment', auth, postsController.createComment)
 router.get('/post/:id/comment', auth, postsController.getComments)
 
 router.get('/post/profile/:id', postsController.getPost);
+router.delete('/post/:id/delete', auth, postsController.deletePost);
 router.get('/post/:username', auth, postsController.getPosts);
 router.get('/post', postsController.getAll);
 router.post('/post', auth, upload.single('image'), postsController.create);
 
+router.put('/user/:username/avatar', auth, upload.single('avatar'), usersController.userEdit);
 router.get("/user/:username", auth, usersController.getUser);
 router.post("/user/:username/follow", auth,  usersController.follow);
 router.post("/user/:username/unfollow", auth,  usersController.unfollow);

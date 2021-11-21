@@ -44,6 +44,19 @@ async function getPost (req, res) {
 
 }
 
+async function deletePost(req, res) {
+    try{
+        const { id } = req.params;
+        // console.log("deleteParams ", id);
+        await Post.where().findOneAndDelete({_id: mongoose.Types.ObjectId(id)});
+        res.status(200).send(`Post ${id} Have Been Deleted`);
+    }catch (e) {
+        console.error(e);
+        res.status(400);
+
+    }
+}
+
 async function getAll(req, res) {
     const allPosts = await Post.find({}).populate("author");
     res.json(allPosts);
@@ -65,9 +78,9 @@ async function unlike(req, res) {
 }
 
 async function createComment(req, res) {
-    console.log(req.userId);
-    console.log(req.params.id);
-    console.log(req.body.content);
+    // console.log(req.userId);
+    // console.log(req.params.id);
+    // console.log(req.body.content);
     const comment = new Comment({
         author: req.userId,
         post: req.params.id,
@@ -93,17 +106,31 @@ async function getComments(req, res) {
     } catch(e) {
         res.sendStatus(500);
     }
-
 }
+async function commentDelete(req, res) {
+    const { id } = req.params;
+    // console.log('req', req)
+    // console.log("id-delete-comment-controller::", id)
+    try{
+        await Comment.where().findOneAndDelete({_id: mongoose.Types.ObjectId(id)});
+        res.status(200).send(`Comment ${id} Have Been Deleted`);
+    }catch (e) {
+        console.error(e)
+        res.sendStatus(400)
+    }}
+
+
 
 module.exports = {
     create,
     getPosts,
     getPost,
+    deletePost,
     like,
     unlike,
     createComment,
     getComments,
+    commentDelete,
     getAll
 
 }
