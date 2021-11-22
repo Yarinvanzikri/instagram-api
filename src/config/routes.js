@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const usersController = require('../controllers/users.controller');
-const postsController = require('../controllers/post.contoroller');
+const postsController = require('../controllers/post.controller');
 const jwt = require('jsonwebtoken');
 
 const multer  = require('multer');
