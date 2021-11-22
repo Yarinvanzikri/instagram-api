@@ -48,8 +48,10 @@ router.post('/post', auth, upload.single('image'), postsController.create);
 
 router.put('/user/:username/avatar', auth, upload.single('avatar'), usersController.userEdit);
 router.get("/user/:username", auth, usersController.getUser);
+router.get("/user/:username/followers-feed", auth, usersController.getFollowersFeed);
 router.post("/user/:username/follow", auth,  usersController.follow);
 router.post("/user/:username/unfollow", auth,  usersController.unfollow);
+
 router.post('/user', usersController.create);
 
 router.get("/search/user/:username", auth,  usersController.search);

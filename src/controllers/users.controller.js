@@ -3,7 +3,6 @@ const jwt = require('jsonwebtoken');
 const Post = require('../models/post');
 const mongoose = require("mongoose");
 const md5 =  require('md5');
-const user = require("express");
 
 
 async function create(req, res){
@@ -137,6 +136,21 @@ async function unfollow(req, res) {
 
 }
 
+async function getFollowersFeed(req, res){
+    const myId = req.userId;
+    let allPosts = [];
+    const user = await User.findById(myId);
+        console.log(user);
+    const followingArr = user.following;
+    for( let i = 0; i < followingArr.length ; i++ ){
+        const posts = await Post.find({author: mongoose.Types.ObjectId(followingArr[i])}).populate('author')
+        allPosts.push(posts)
+    }
+
+    res.json(allPosts)
+}
+
+
 
 module.exports = {
     create,
@@ -146,6 +160,7 @@ module.exports = {
     getUser,
     follow,
     unfollow,
+    getFollowersFeed,
     userEdit,
     search
 }

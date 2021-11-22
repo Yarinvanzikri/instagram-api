@@ -19,6 +19,7 @@ const userSchema = new mongoose.Schema({
     },
     following: {
         type: Array,
+        ref: "User",
         default: () =>[]
     },
     avatar: {
