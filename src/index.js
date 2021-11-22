@@ -4,7 +4,7 @@ const routes = require('./config/routes')
 const env = require('./config/env/index')
 const cors = require('cors')
 const app = express();
-const port = 4000;
+const port = process.env.PORT || 4000;
 
 app.use(cors()); // Allows us to get request from other domains. (npm i cors)
 app.use(express.static('public'))
