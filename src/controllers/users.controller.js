@@ -140,16 +140,17 @@ async function getFollowersFeed(req, res){
     const myId = req.userId;
     let allPosts = [];
     const user = await User.findById(myId);
+    const userPosts = await Post.find({author: mongoose.Types.ObjectId(myId)}).populate('author');
         // console.log(user);
     const followingArr = user.following;
     for( let i = 0; i < followingArr.length ; i++ ){
-        const posts = await Post.find({author: mongoose.Types.ObjectId(followingArr[i])}).populate('author')
-        allPosts.push(posts)
+        const posts = await Post.find({author: mongoose.Types.ObjectId(followingArr[i])}).populate('author');
+        allPosts.push(posts);
+        console.log('posts',posts)
     }
 
-    res.json(allPosts)
+    res.json([...allPosts, userPosts])
 }
-
 
 
 module.exports = {
